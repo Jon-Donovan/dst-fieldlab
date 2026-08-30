@@ -125,3 +125,8 @@ scripts/fieldlab/
 ## 0.2.1
 
 - Fixed startup crash: configuration loaded from `scripts/fieldlab/config.lua` now passes the owning mod name explicitly to `GetModConfigData`.
+
+
+## 0.2.2
+
+- Fixed required-module startup crash: `tools.lua` and `backpack.lua` no longer access the mod-only `GLOBAL`/`AddPrefabPostInit` environment directly. Runtime dependencies are passed explicitly from `modmain.lua`.
