@@ -1,4 +1,4 @@
-local Config = require("fieldlab/config")
+local Config = require("fieldlab/config").Load(modname)
 local Tools = require("fieldlab/tools")
 local Backpack = require("fieldlab/backpack")
 
