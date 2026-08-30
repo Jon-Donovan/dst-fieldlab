@@ -120,3 +120,8 @@ scripts/fieldlab/
   tools.lua
   backpack.lua
 ```
+
+
+## 0.2.1
+
+- Fixed startup crash: configuration loaded from `scripts/fieldlab/config.lua` now passes the owning mod name explicitly to `GetModConfigData`.
