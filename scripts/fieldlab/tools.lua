@@ -4,22 +4,10 @@ local ACTIONS = GLOBAL.ACTIONS
 local TheWorld = GLOBAL.TheWorld
 
 local TOOL_DEFINITIONS = {
-    axe = {
-        action = ACTIONS.CHOP,
-        label = "Axe",
-    },
-    pickaxe = {
-        action = ACTIONS.MINE,
-        label = "Pickaxe",
-    },
-    shovel = {
-        action = ACTIONS.DIG,
-        label = "Shovel",
-    },
-    hammer = {
-        action = ACTIONS.HAMMER,
-        label = "Hammer",
-    },
+    axe = { action = ACTIONS.CHOP, label = "Axe" },
+    pickaxe = { action = ACTIONS.MINE, label = "Pickaxe" },
+    shovel = { action = ACTIONS.DIG, label = "Shovel" },
+    hammer = { action = ACTIONS.HAMMER, label = "Hammer" },
 }
 
 local function Log(config, message)
@@ -28,25 +16,39 @@ local function Log(config, message)
     end
 end
 
+local function GetVanillaConsumption(finiteuses, action)
+    if finiteuses == nil then
+        return nil
+    end
+    if finiteuses.consumption ~= nil and finiteuses.consumption[action] ~= nil then
+        return finiteuses.consumption[action]
+    end
+    return 1
+end
+
 local function ApplyToolConfig(inst, definition, config)
-    -- The components modified below exist only on the authoritative simulation.
     if TheWorld == nil or not TheWorld.ismastersim then
         return
     end
 
-    if config.tools.work_efficiency ~= false then
+    if config.tools.work_power ~= false then
         if inst.components.tool ~= nil then
-            inst.components.tool:SetAction(definition.action, config.tools.work_efficiency)
+            inst.components.tool:SetAction(definition.action, config.tools.work_power)
         else
-            Log(config, definition.label .. ": component 'tool' is missing; efficiency was not applied.")
+            Log(config, definition.label .. ": component 'tool' is missing; work power was not applied.")
         end
     end
 
-    if config.tools.work_durability_cost ~= false then
+    if config.tools.durability_multiplier ~= false then
         if inst.components.finiteuses ~= nil then
-            inst.components.finiteuses:SetConsumption(definition.action, config.tools.work_durability_cost)
+            local cost = 0
+            if config.tools.durability_multiplier ~= "infinite" then
+                local vanilla = GetVanillaConsumption(inst.components.finiteuses, definition.action)
+                cost = vanilla / config.tools.durability_multiplier
+            end
+            inst.components.finiteuses:SetConsumption(definition.action, cost)
         else
-            Log(config, definition.label .. ": component 'finiteuses' is missing; durability cost was not applied.")
+            Log(config, definition.label .. ": component 'finiteuses' is missing; durability was not applied.")
         end
     end
 
