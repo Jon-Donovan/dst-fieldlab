@@ -1,9 +1,11 @@
 local Backpack = {}
 
-local TheWorld = GLOBAL.TheWorld
-local GetTime = GLOBAL.GetTime
-local SEASONS = GLOBAL.SEASONS
-local TUNING = GLOBAL.TUNING
+local GetWorld
+local GetTime
+local SEASONS
+local TUNING
+local SpawnPrefab
+local AddPrefabPostInit
 
 local SPEED_KEY = "dst_fieldlab_backpack"
 local TEMP_KEY = "dst_fieldlab_backpack"
@@ -43,7 +45,7 @@ local function EnsureLight(inst, parent, config)
     end
 
     if inst._fieldlab_light == nil or not inst._fieldlab_light:IsValid() then
-        inst._fieldlab_light = GLOBAL.SpawnPrefab("minerhatlight")
+        inst._fieldlab_light = SpawnPrefab("minerhatlight")
     end
 
     local light = inst._fieldlab_light
@@ -482,7 +484,8 @@ local function WrapCallbacks(inst, config)
 end
 
 local function BackpackPostInit(inst, config)
-    if TheWorld == nil or not TheWorld.ismastersim then
+    local world = GetWorld()
+    if world == nil or not world.ismastersim then
         return
     end
 
@@ -497,7 +500,22 @@ local function BackpackPostInit(inst, config)
     RefreshLight(inst, config)
 end
 
-function Backpack.Init(config)
+function Backpack.Init(config, deps)
+    assert(deps ~= nil, "DST FieldLab: backpack dependencies are required")
+    assert(deps.GetWorld ~= nil, "DST FieldLab: GetWorld dependency is required")
+    assert(deps.GetTime ~= nil, "DST FieldLab: GetTime dependency is required")
+    assert(deps.SEASONS ~= nil, "DST FieldLab: SEASONS dependency is required")
+    assert(deps.TUNING ~= nil, "DST FieldLab: TUNING dependency is required")
+    assert(deps.SpawnPrefab ~= nil, "DST FieldLab: SpawnPrefab dependency is required")
+    assert(deps.AddPrefabPostInit ~= nil, "DST FieldLab: AddPrefabPostInit dependency is required")
+
+    GetWorld = deps.GetWorld
+    GetTime = deps.GetTime
+    SEASONS = deps.SEASONS
+    TUNING = deps.TUNING
+    SpawnPrefab = deps.SpawnPrefab
+    AddPrefabPostInit = deps.AddPrefabPostInit
+
     if not config.backpack.enabled then
         Log(config, "Backpack modules disabled by master switch.")
         return
