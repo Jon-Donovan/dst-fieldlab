@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/github/banner.jpg" alt="DST FieldLab" width="100%">
+</p>
+
 # DST FieldLab
 
 DST FieldLab is a configurable gameplay laboratory for Don't Starve Together.
