@@ -123,3 +123,13 @@ For Axe, Pickaxe, Shovel, and Hammer:
 - Test WX-78/electricity mechanics.
 - Test with common equipment/inventory mods used on the target server.
 - Verify no FieldLab modifier remains after unequip when another mod also changes speed, hunger burn rate, fire damage, insulation, or electrical insulation.
+
+## Prevent Burning regression
+
+1. Enable `Prevent Burning`.
+2. Equip the standard backpack.
+3. Enter an active fire source and verify the character does not enter the burning state.
+4. Remove the backpack and verify vanilla ignition works again.
+5. Ignite the character without the backpack, then equip the backpack and verify the existing burning state is extinguished immediately.
+6. Repeat with a character that already has `fireimmune`; after unequip, verify FieldLab does not remove the pre-existing tag.
+

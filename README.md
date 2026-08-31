@@ -130,3 +130,9 @@ scripts/fieldlab/
 ## 0.2.2
 
 - Fixed required-module startup crash: `tools.lua` and `backpack.lua` no longer access the mod-only `GLOBAL`/`AddPrefabPostInit` environment directly. Runtime dependencies are passed explicitly from `modmain.lua`.
+
+## 0.2.3
+
+- Fixed `Prevent Burning`: while the backpack is equipped, the wearer now receives DST's native `fireimmune` tag instead of being extinguished reactively after `onignite`.
+- Equipping the backpack while already burning or smoldering extinguishes the wearer immediately.
+

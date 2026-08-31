@@ -1,7 +1,7 @@
 name = "DST FieldLab"
 description = "Configurable field laboratory for testing and studying Don't Starve Together gameplay mechanics."
 author = "ClTech"
-version = "0.2.2"
+version = "0.2.3"
 
 api_version = 10
 dst_compatible = true
