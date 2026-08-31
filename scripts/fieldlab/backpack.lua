@@ -123,23 +123,25 @@ local function ApplyPreventBurning(inst, owner, config)
         return
     end
 
-    inst._fieldlab_on_owner_ignite = function()
-        if owner.components.burnable ~= nil and owner.components.burnable:IsBurning() then
-            owner.components.burnable:Extinguish()
-        end
-    end
-    inst:ListenForEvent("onignite", inst._fieldlab_on_owner_ignite, owner)
+    -- Burnable:Ignite() and Burnable:StartWildfire() both respect the
+    -- fireimmune tag. Prevent ignition instead of trying to extinguish
+    -- the wearer after every onignite event.
+    inst._fieldlab_owner_had_fireimmune = owner:HasTag("fireimmune")
+    owner:AddTag("fireimmune")
 
-    if owner.components.burnable ~= nil and owner.components.burnable:IsBurning() then
-        owner.components.burnable:Extinguish()
+    -- If the backpack is equipped while the wearer is already burning or
+    -- smoldering, clear that state immediately.
+    if owner.components.burnable ~= nil
+        and (owner.components.burnable:IsBurning() or owner.components.burnable:IsSmoldering()) then
+        owner.components.burnable:Extinguish(true)
     end
 end
 
 local function RemovePreventBurning(inst, owner)
-    if inst._fieldlab_on_owner_ignite ~= nil then
-        inst:RemoveEventCallback("onignite", inst._fieldlab_on_owner_ignite, owner)
-        inst._fieldlab_on_owner_ignite = nil
+    if inst._fieldlab_owner_had_fireimmune == false then
+        owner:RemoveTag("fireimmune")
     end
+    inst._fieldlab_owner_had_fireimmune = nil
 end
 
 local function ApplyLightningProtection(inst, owner, config)
